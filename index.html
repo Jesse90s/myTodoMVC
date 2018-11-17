@@ -17,15 +17,16 @@
     <section class="todoapp">
         <header class="header">
             <h1>任务清单</h1>
-            <input autofocus="autofocus" autocomplete="off" placeholder="想干啥?" class="new-todo">
+            <!-- 1.2 keyup.enter事件绑定 inputValue双向数据绑定 -->
+            <input autofocus="autofocus" autocomplete="off" placeholder="想干啥?" class="new-todo" @keyup.enter="addTodo" v-model.trim="inputValue">
         </header>
         <section class="main">
             <input type="checkbox" class="toggle-all">
             <ul class="todo-list">
-                <li class="todo ">
+                <li class="todo " v-for="(item, index) in todoList">
                     <div class="view">
                         <input type="checkbox" class="toggle">
-                        <label>21</label>
+                        <label>{{item.content}}</label>
                         <button class="destroy"></button>
                     </div>
                     <input type="text" class="edit">
@@ -92,3 +93,47 @@
 </body>
 
 </html>
+
+<script>
+/*
+[需求1]
+顶部输入框
+输入内容，回车，获取输入的内容，添加到页面，即增加一条待办事项
+@keyup.enter
+双向数据绑定
+for循环渲染列表数据
+数据结构
+[
+    {
+        content: '新增待办内容',
+        isCompleted: false      默认新增待办内容都是未完成状态
+    }
+]
+
+*/
+
+// 1.1 实例化一个vue对象
+let app = new Vue({
+    el: ".todoapp",
+    data: {
+        // 待办事项数组
+        todoList: [],
+
+        // 双向数据绑定
+        inputValue:''
+    },
+    methods: {
+        // 新增待办事项
+        addTodo(){
+            this.todoList.push({
+                content: this.inputValue,
+                isCompleted: false
+            });
+
+            // 每次添加完待办事项后立马清空内容
+            this.inputValue = '';
+        }
+    }
+})
+
+</script>
