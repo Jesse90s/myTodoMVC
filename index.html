@@ -97,18 +97,22 @@
 <script>
 /*
 [需求1]
-顶部输入框
-输入内容，回车，获取输入的内容，添加到页面，即增加一条待办事项
+顶部输入框，输入内容，回车，获取输入的内容，添加到页面，即增加一条待办事项
 @keyup.enter
 双向数据绑定
 for循环渲染列表数据
-数据结构
+数据结构（新增待办事项不能仅仅是输入的字符串，还有完成状态也要记录下来，所以要传入一个对象）
 [
     {
         content: '新增待办内容',
         isCompleted: false      默认新增待办内容都是未完成状态
     }
 ]
+
+[需求2]
+对输入内容做非空判断，为空提示用户，不为空才新增数据
+新增数据成功之后，还要清空内容
+新增的待办事项要在最前面，那就不能用push，还用unshift
 
 */
 
@@ -125,12 +129,21 @@ let app = new Vue({
     methods: {
         // 新增待办事项
         addTodo(){
-            this.todoList.push({
+            // 2.1 非空判断
+            if(this.inputValue === ''){
+                alert('不能提交为空');
+                return;
+            }
+            // 2.3 插入数组中
+            // this.todoList.push({     //push是插入在数组末尾
+            this.todoList.unshift({     //unshift是插入在数组开头
+                // 内容
                 content: this.inputValue,
+                // 是否完成的状态（新增的默认都是false）
                 isCompleted: false
             });
 
-            // 每次添加完待办事项后立马清空内容
+            // 2.2 每次添加完待办事项后立马清空内容
             this.inputValue = '';
         }
     }
