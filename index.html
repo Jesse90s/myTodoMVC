@@ -18,7 +18,8 @@
         <header class="header">
             <h1>任务清单</h1>
             <!-- 1.2 keyup.enter事件绑定 inputValue双向数据绑定 -->
-            <input autofocus="autofocus" autocomplete="off" placeholder="想干啥?" class="new-todo" @keyup.enter="addTodo" v-model.trim="inputValue">
+            <input autofocus="autofocus" autocomplete="off" placeholder="想干啥?" class="new-todo" @keyup.enter="addTodo"
+                v-model.trim="inputValue">
         </header>
         <section class="main">
             <input type="checkbox" class="toggle-all">
@@ -40,18 +41,18 @@
                     <input type="text" class="edit">
                 </li>
                 <li class="todo editing">
-                        <div class="view">
-                            <input type="checkbox" class="toggle">
-                            <label>21</label>
-                            <button class="destroy"></button>
-                        </div>
-                        <input type="text" class="edit">
-                    </li>
+                    <div class="view">
+                        <input type="checkbox" class="toggle">
+                        <label>21</label>
+                        <button class="destroy"></button>
+                    </div>
+                    <input type="text" class="edit">
+                </li>
             </ul>
         </section>
         <footer class="footer">
             <span class="todo-count">
-                <strong>1</strong> 项 剩余
+                <strong>{{uncompletedTodo}}</strong> 项 剩余
             </span>
             <ul class="filters">
                 <li>
@@ -95,7 +96,7 @@
 </html>
 
 <script>
-/*
+    /*
 [需求1]
 顶部输入框，输入内容，回车，获取输入的内容，添加到页面，即增加一条待办事项
 @keyup.enter
@@ -114,39 +115,69 @@ for循环渲染列表数据
 新增数据成功之后，还要清空内容
 新增的待办事项要在最前面，那就不能用push，还用unshift
 
+[需求3]
+计算未完成的待办事项的个数
+计算属性
+找到所有isCompleted为false的数组元素即可
+
 */
 
-// 1.1 实例化一个vue对象
-let app = new Vue({
-    el: ".todoapp",
-    data: {
-        // 待办事项数组
-        todoList: [],
+    // 1.1 实例化一个vue对象
+    let app = new Vue({
+        el: ".todoapp",
+        data: {
+            // 待办事项数组
+            todoList: [],
 
-        // 双向数据绑定
-        inputValue:''
-    },
-    methods: {
-        // 新增待办事项
-        addTodo(){
-            // 2.1 非空判断
-            if(this.inputValue === ''){
-                alert('不能提交为空');
-                return;
+            // 双向数据绑定
+            inputValue: ''
+        },
+        methods: {
+            // 新增待办事项
+            addTodo() {
+                // 2.1 非空判断
+                if (this.inputValue === '') {
+                    alert('不能提交为空');
+                    return;
+                }
+                // 2.3 插入数组中
+                // this.todoList.push({     //push是插入在数组末尾
+                this.todoList.unshift({ //unshift是插入在数组开头
+                    // 内容
+                    content: this.inputValue,
+                    // 是否完成的状态（新增的默认都是false）
+                    isCompleted: false
+                });
+
+                // 2.2 每次添加完待办事项后立马清空内容
+                this.inputValue = '';
             }
-            // 2.3 插入数组中
-            // this.todoList.push({     //push是插入在数组末尾
-            this.todoList.unshift({     //unshift是插入在数组开头
-                // 内容
-                content: this.inputValue,
-                // 是否完成的状态（新增的默认都是false）
-                isCompleted: false
-            });
+        },
+        // 计算属性
+        computed: {
+            // 未完成的待办事项
+            uncompletedTodo() {
+                // 遍历 判断 累加
+                let uncompletedCount = 0;
+                /*
+                数组的forEach方法
+                1. 数组点出来的方法
+                2. forEach小括号()接收的参数是回调函数
+                参数1 每次循环的值
+                参数2 索引
+                参数3 数组本身
+                */
+                this.todoList.forEach((v, i, arr) => {
 
-            // 2.2 每次添加完待办事项后立马清空内容
-            this.inputValue = '';
+                    // console.log(v, i, arr);
+                    
+                    if (v.isCompleted == false) {
+                        uncompletedCount++;
+                    }
+                })
+                // 将计算得到的未完成待办事项的个数返回
+                return uncompletedCount;
+            }
         }
-    }
-})
-
+    })
 </script>
