@@ -144,17 +144,38 @@ v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签
 点击清空列表，只清空已完成的
 注意数组要从后往前删，不然数组排序的改变会影响删除
 
+[需求8]
+待办事项数据常驻
+localStorage（只要不清除缓存，就一直都存在，硬盘中，而非内存中）
+sessionStorage（一次会话，关闭浏览器就不在了）
 
+其实这样缓存数据还是存在用户侧，如果要保证缓存数据一直都存在，就要保存在服务器端的数据库，因为客户端是不可控的
+    8.1 读取数据
+    页面一打开时，就读取缓存数据（有就使用，无就设置为空数组）
+    8.2 保存数据
+    每次修改数据，就保存一次（性能消耗大）
+    浏览器关闭时，才保存数据（性能消耗小）
 
 
 */
+
+
+    // 8.1 页面一打开，读取数据，读取出来是json字符串，需要转换为js数据
+    let todoList = JSON.parse(window.localStorage.getItem("userTodoList"))||[];
+    // 8.2 页面关闭时触发
+    // window.onunload = function(){
+    window.onbeforeunload = function(){
+        // 缓存保存在硬盘中
+        window.localStorage.setItem("userTodoList", JSON.stringify(todoList));
+    }
 
     // 1.1 实例化一个vue对象
     let app = new Vue({
         el: ".todoapp",
         data: {
             // 待办事项数组
-            todoList: [],
+            // todoList: [],
+            todoList,   //es6快速赋值
 
             // 双向数据绑定
             inputValue: ''
