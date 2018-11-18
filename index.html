@@ -156,17 +156,25 @@ sessionStorage（一次会话，关闭浏览器就不在了）
     每次修改数据，就保存一次（性能消耗大）
     浏览器关闭时，才保存数据（性能消耗小）
 
+[需求9]
+用vue的生命周期函数实现数据常驻
+beforeCreate    beforeCreate在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
+                vue实例被创建时即触发，但传递的参数还没有应用上去，所以实际开发中很少应用，因为访问不到vue中的任何任何
+created         created在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见
+                Vue实例创建好，并且传递的属性都设置到这个实例上了，一般在初始化Vue的数据时使用
+
 
 */
 
 
+
     // 8.1 页面一打开，读取数据，读取出来是json字符串，需要转换为js数据
-    let todoList = JSON.parse(window.localStorage.getItem("userTodoList"))||[];
+    // let todoList = JSON.parse(window.localStorage.getItem("userTodoList")) || [];
     // 8.2 页面关闭时触发
     // window.onunload = function(){
-    window.onbeforeunload = function(){
+    window.onbeforeunload = function () {
         // 缓存保存在硬盘中
-        window.localStorage.setItem("userTodoList", JSON.stringify(todoList));
+        window.localStorage.setItem("userTodoList", JSON.stringify(app.todoList));
     }
 
     // 1.1 实例化一个vue对象
@@ -174,8 +182,8 @@ sessionStorage（一次会话，关闭浏览器就不在了）
         el: ".todoapp",
         data: {
             // 待办事项数组
-            // todoList: [],
-            todoList,   //es6快速赋值
+            todoList: [],
+            // todoList, //es6快速赋值
 
             // 双向数据绑定
             inputValue: ''
@@ -201,16 +209,16 @@ sessionStorage（一次会话，关闭浏览器就不在了）
                 this.inputValue = '';
             },
             // 4.2 根据索引，删除对应的待办事项
-            delOne(index){
+            delOne(index) {
                 // 删除之前，最好提示一下用户
-                if(confirm('确定要删除吗？') == true){
+                if (confirm('确定要删除吗？') == true) {
                     this.todoList.splice(index, 1);
                 }
             },
             // 6.2 清空数据
-            clearList(){
+            clearList() {
                 // 删除之前，最好提示一下用户
-                if(confirm("确定要清空列表么？")){
+                if (confirm("确定要清空列表么？")) {
                     // this.todoList = [];
 
                     // 7.1 清空已完成的待办事项（一定要从后往前删）
@@ -219,8 +227,8 @@ sessionStorage（一次会话，关闭浏览器就不在了）
                     //         arr.splice(i, 1);
                     //     }
                     // })
-                    for(let i = this.todoList.length-1;i >= 0;i--){
-                        if(this.todoList[i].isCompleted){
+                    for (let i = this.todoList.length - 1; i >= 0; i--) {
+                        if (this.todoList[i].isCompleted) {
                             this.todoList.splice(i, 1);
                         }
                     }
@@ -244,7 +252,7 @@ sessionStorage（一次会话，关闭浏览器就不在了）
                 this.todoList.forEach((v, i, arr) => {
 
                     // console.log(v, i, arr);
-                    
+
                     if (v.isCompleted == false) {
                         uncompletedCount++;
                     }
@@ -252,6 +260,18 @@ sessionStorage（一次会话，关闭浏览器就不在了）
                 // 将计算得到的未完成待办事项的个数返回
                 return uncompletedCount;
             }
-        }
+        },
+
+        // 9.1 用生命周期函数读取数据
+        beforeCreate() {
+            console.log('beforeCreate');
+            console.log(this.todoList);   //undefined 获取不到任何内容
+        },
+
+        created() {
+            console.log("created");
+            console.log(this.todoList);
+            this.todoList = JSON.parse(window.localStorage.getItem("userTodoList"))||[];
+        },
     })
 </script>
