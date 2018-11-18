@@ -25,9 +25,11 @@
             <input type="checkbox" class="toggle-all">
             <ul class="todo-list">
                 <!-- 1.3 渲染列表数据 -->
-                <li class="todo " v-for="(item, index) in todoList">
+                <!-- 5.2 v-bind绑定属性添加类名 -->
+                <li class="todo " :class="{completed: item.isCompleted}" v-for="(item, index) in todoList">
                     <div class="view">
-                        <input type="checkbox" class="toggle">
+                        <!-- 5.1 双向数据绑定让checkbox的选中状态与isCompleted保持一致 -->
+                        <input type="checkbox" class="toggle" v-model="item.isCompleted">
                         <label>{{item.content}}</label>
                         <!-- 4.1 找到这个删除按钮x 添加click点击事件 传入下标 -->
                         <button class="destroy" @click="delOne(index)"></button>
@@ -54,6 +56,7 @@
         </section>
         <footer class="footer">
             <!-- 需求升级：如果为0项，就隐藏这个标签 -->
+            <!-- <span class="todo-count" v-show="{{uncompletedTodo!=0}}"> -->
             <span class="todo-count" v-show="uncompletedTodo!=0">
                 <strong>{{uncompletedTodo}}</strong> 项 剩余
             </span>
@@ -127,6 +130,11 @@ for循环渲染列表数据
 点击每一行末尾的删除按钮x，删除当前待办事项
 click事件
 传入下标
+
+[需求5]
+双向数据绑定：点击每一个待办事项的checkbox，切换完成状态，让checkbox的选中状态与isCompleted保持一致
+v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签添加一个completed类名（但原有类名保持不变）
+
 
 
 */
