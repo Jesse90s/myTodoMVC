@@ -71,7 +71,8 @@
                     <a href="#/completed" class="selected">完成</a>
                 </li>
             </ul>
-            <button class="clear-completed">
+            <!-- 6.1 绑定点击事件 -->
+            <button class="clear-completed" @click="clearList">
                 清空列表
             </button>
         </footer>
@@ -135,6 +136,10 @@ click事件
 双向数据绑定：点击每一个待办事项的checkbox，切换完成状态，让checkbox的选中状态与isCompleted保持一致
 v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签添加一个completed类名（但原有类名保持不变）
 
+[需求6]
+点击清空列表
+绑定点击事件，设置数组为空即可
+
 
 
 */
@@ -174,6 +179,13 @@ v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签
                 // 删除之前，最好提示一下用户
                 if(confirm('确定要删除吗？') == true){
                     this.todoList.splice(index, 1);
+                }
+            },
+            // 6.2 清空数据
+            clearList(){
+                // 删除之前，最好提示一下用户
+                if(confirm("确定要清空列表么？")){
+                    this.todoList = [];
                 }
             }
         },
