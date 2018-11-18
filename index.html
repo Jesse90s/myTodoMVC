@@ -24,11 +24,13 @@
         <section class="main">
             <input type="checkbox" class="toggle-all">
             <ul class="todo-list">
+                <!-- 1.3 渲染列表数据 -->
                 <li class="todo " v-for="(item, index) in todoList">
                     <div class="view">
                         <input type="checkbox" class="toggle">
                         <label>{{item.content}}</label>
-                        <button class="destroy"></button>
+                        <!-- 4.1 找到这个删除按钮x 添加click点击事件 传入下标 -->
+                        <button class="destroy" @click="delOne(index)"></button>
                     </div>
                     <input type="text" class="edit">
                 </li>
@@ -51,7 +53,8 @@
             </ul>
         </section>
         <footer class="footer">
-            <span class="todo-count">
+            <!-- 需求升级：如果为0项，就隐藏这个标签 -->
+            <span class="todo-count" v-show="uncompletedTodo!=0">
                 <strong>{{uncompletedTodo}}</strong> 项 剩余
             </span>
             <ul class="filters">
@@ -120,6 +123,12 @@ for循环渲染列表数据
 计算属性
 找到所有isCompleted为false的数组元素即可
 
+[需求4]
+点击每一行末尾的删除按钮x，删除当前待办事项
+click事件
+传入下标
+
+
 */
 
     // 1.1 实例化一个vue对象
@@ -151,21 +160,28 @@ for循环渲染列表数据
 
                 // 2.2 每次添加完待办事项后立马清空内容
                 this.inputValue = '';
+            },
+            // 4.2 根据索引，删除对应的待办事项
+            delOne(index){
+                // 删除之前，最好提示一下用户
+                if(confirm('确定要删除吗？') == true){
+                    this.todoList.splice(index, 1);
+                }
             }
         },
         // 计算属性
         computed: {
-            // 未完成的待办事项
+            // 3. 未完成的待办事项
             uncompletedTodo() {
                 // 遍历 判断 累加
                 let uncompletedCount = 0;
                 /*
                 数组的forEach方法
                 1. 数组点出来的方法
-                2. forEach小括号()接收的参数是回调函数
-                参数1 每次循环的值
-                参数2 索引
-                参数3 数组本身
+                2. forEach()小括号里接收的参数是回调函数，这里是一个箭头函数
+                    参数1 每次循环的值
+                    参数2 索引
+                    参数3 数组本身
                 */
                 this.todoList.forEach((v, i, arr) => {
 
