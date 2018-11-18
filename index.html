@@ -140,6 +140,11 @@ v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签
 点击清空列表
 绑定点击事件，设置数组为空即可
 
+[需求7]
+点击清空列表，只清空已完成的
+注意数组要从后往前删，不然数组排序的改变会影响删除
+
+
 
 
 */
@@ -185,7 +190,19 @@ v-bind绑定属性，如果标识状态isCompleted为true，就为当前li标签
             clearList(){
                 // 删除之前，最好提示一下用户
                 if(confirm("确定要清空列表么？")){
-                    this.todoList = [];
+                    // this.todoList = [];
+
+                    // 7.1 清空已完成的待办事项（一定要从后往前删）
+                    // this.todoList.forEach((v, i, arr)=>{
+                    //     if(v.isCompleted){
+                    //         arr.splice(i, 1);
+                    //     }
+                    // })
+                    for(let i = this.todoList.length-1;i >= 0;i--){
+                        if(this.todoList[i].isCompleted){
+                            this.todoList.splice(i, 1);
+                        }
+                    }
                 }
             }
         },
